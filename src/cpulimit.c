@@ -309,9 +309,9 @@ void limit_process(pid_t pid, double limit, int include_children)
 					remove_process(&pgroup, proc->pid);
 				}
 				node = next_node;
-			}
-            if (signal_c == 0){
-                fprintf(stdout, "SIGSTOP sent to process: %d, CPU: %0.2lf%", proc->pid, pcpu*100);
+                if (signal_c == 0){
+                    fprintf(stdout, "SIGSTOP sent to process: %d, CPU: %0.2lf%\n", proc->pid, pcpu*100);
+                }
             }
             print_signal = 0;
             signal_c++;
@@ -319,7 +319,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 			nanosleep(&tsleep,NULL);
 		}
 		c++;
-        if (print_signal && signal_c >0){
+        if (print_signal && signal_c >0 ) {
             fprintf(stdout, "The process was limited for %d cycles\n", signal_c);
             signal_c = 0;
         }
