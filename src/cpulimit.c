@@ -208,6 +208,9 @@ void limit_process(pid_t pid, double limit, int include_children)
 	//counter
 	int c = 0;
 
+    int signal_c = 0;
+    int print_signal = 0;
+
 	//get a better priority
 	increase_priority();
 	
@@ -277,6 +280,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 			}
 			node = next_node;
 		}
+        print_signal = 1;
 
 		//now processes are free to run (same working slice for all)
 		gettimeofday(&startwork, NULL);
@@ -306,10 +310,19 @@ void limit_process(pid_t pid, double limit, int include_children)
 				}
 				node = next_node;
 			}
+            if (signal_c == 0){
+                fprintf(stdout, "SIGSTOP sent to process: %d, CPU: %0.2lf%", proc->pid, pcpu*100);
+            }
+            print_signal = 0;
+            signal_c++;
 			//now the processes are sleeping
 			nanosleep(&tsleep,NULL);
 		}
 		c++;
+        if (print_signal && signal_c >0){
+            fprintf(stdout, "The process was limited for %d cycles\n", signal_c);
+            signal_c = 0;
+        }
 	}
 	close_process_group(&pgroup);
 }
