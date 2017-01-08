@@ -119,6 +119,7 @@ static inline unsigned long timediff(const struct timeval *t1,const struct timev
 
 static void print_usage(FILE *stream, int exit_code)
 {
+	fprintf(stream, "CPUlimit version 0.3\n");
 	fprintf(stream, "Usage: %s [OPTIONS...] TARGET\n", program_name);
 	fprintf(stream, "   OPTIONS\n");
 	fprintf(stream, "      -l, --limit=N          percentage of cpu allowed from 0 to %d (required)\n", 100*NCPU);
