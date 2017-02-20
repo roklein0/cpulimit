@@ -73,6 +73,8 @@
 
 #define MAX_PRIORITY -10
 
+#define VERSION		"0.4"
+
 /* GLOBAL VARIABLES */
 
 //the "family"
@@ -119,7 +121,7 @@ static inline unsigned long timediff(const struct timeval *t1,const struct timev
 
 static void print_usage(FILE *stream, int exit_code)
 {
-	fprintf(stream, "CPUlimit version 0.3\n");
+	fprintf(stream, "CPUlimit version %s\n", VERSION);
 	fprintf(stream, "Usage: %s [OPTIONS...] TARGET\n", program_name);
 	fprintf(stream, "   OPTIONS\n");
 	fprintf(stream, "      -l, --limit=N          percentage of cpu allowed from 0 to %d (required)\n", 100*NCPU);
@@ -146,7 +148,7 @@ static void increase_priority() {
 		if (verbose) printf("Priority changed to %d\n", priority);
 	}
 	else {
-		if (verbose) printf("Warning: Cannot change priority. Run as root or renice for best results.\n");
+		if (verbose) printf("WARNING|Cannot change priority. Run as root or renice for best results.\n");
 	}
 }
 
@@ -274,7 +276,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 			struct process *proc = (struct process*)(node->data);
 			if (kill(proc->pid,SIGCONT) != 0) {
 				//process is dead, remove it from family
-				if (verbose) fprintf(stderr, "SIGCONT failed. Process %d dead!\n", proc->pid);
+				if (verbose) fprintf(stderr, "ERROR|SIGCONT failed. Process %d dead!\n", proc->pid);
 				//remove process from group
 				delete_node(pgroup.proclist, node);
 				remove_process(&pgroup, proc->pid);
@@ -304,14 +306,14 @@ void limit_process(pid_t pid, double limit, int include_children)
 				struct process *proc = (struct process*)(node->data);
 				if (kill(proc->pid,SIGSTOP)!=0) {
 					//process is dead, remove it from family
-					if (verbose) fprintf(stderr, "SIGSTOP failed. Process %d dead!\n", proc->pid);
+					if (verbose) fprintf(stderr, "ERROR|SIGSTOP failed. Process %d dead!\n", proc->pid);
 					//remove process from group
 					delete_node(pgroup.proclist, node);
 					remove_process(&pgroup, proc->pid);
 				}
 				node = next_node;
                 if (signal_c == 0){
-                    fprintf(stdout, "SIGSTOP sent to process: %d, CPU: %0.2lf%\n", proc->pid, pcpu*100);
+                    fprintf(stdout, "WARNING|SIGSTOP sent to process: %d, CPU: %0.2lf%\n", proc->pid, pcpu*100);
                 }
             }
             print_signal = 0;
@@ -321,7 +323,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 		}
 		c++;
         if (print_signal && signal_c >0 ) {
-            fprintf(stdout, "The process was limited for %d cycles\n", signal_c);
+            fprintf(stdout, "WARNING|The process was limited for %d cycles\n", signal_c);
             signal_c = 0;
         }
 	}
