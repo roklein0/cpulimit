@@ -73,7 +73,7 @@
 
 #define MAX_PRIORITY -10
 
-#define VERSION		"0.4"
+#define VERSION		"0.5"
 
 /* GLOBAL VARIABLES */
 
@@ -313,7 +313,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 				}
 				node = next_node;
                 if (signal_c == 0){
-                    fprintf(stdout, "WARNING|SIGSTOP sent to process: %d, CPU: %0.2lf%\n", proc->pid, pcpu*100);
+                    fprintf(stderr, "WARNING|SIGSTOP sent to process: %d, CPU: %0.2lf%\n", proc->pid, pcpu*100);
                 }
             }
             print_signal = 0;
@@ -323,7 +323,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 		}
 		c++;
         if (print_signal && signal_c >0 ) {
-            fprintf(stdout, "WARNING|The process was limited for %d cycles\n", signal_c);
+            fprintf(stderr, "WARNING|The process was limited for %d cycles\n", signal_c);
             signal_c = 0;
         }
 	}
